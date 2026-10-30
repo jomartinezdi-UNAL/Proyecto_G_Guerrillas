@@ -25,17 +25,17 @@ La probabilidad de seleccionar una unidad depende proporcionalmente de su tamañ
 
 La distribución de tamaños se analiza mediante la expresión:
 
-\[
+$$
 n_s \propto s^{-\alpha}
-\]
+$$
 
 Para las simulaciones finales se utilizó:
 
 | Parámetro | Valor |
-|---|---:|
-| Fuerza total \(N\) | 30 000 |
-| Valores de \(\nu\) | 0.005, 0.01, 0.05 y 0.1 |
-| Exponente teórico de referencia | 2.5 |
+|:---|---:|
+| Fuerza total ($N$) | 30 000 |
+| Valores de $\nu$ | 0.005, 0.01, 0.05 y 0.1 |
+| Exponente teórico de referencia ($\alpha$) | 2.5 |
 
 ## Estructura del repositorio
 
