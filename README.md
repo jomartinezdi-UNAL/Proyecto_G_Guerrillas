@@ -39,8 +39,7 @@ Para las simulaciones finales se utilizó:
 
 ## Estructura del repositorio
 
-## Estructura del repositorio
-
+```text
 Proyecto_G_Guerrillas/
 │
 ├── figures/
@@ -60,8 +59,7 @@ Proyecto_G_Guerrillas/
 │
 ├── README.md
 └── requirements.txt
-
-
+```
 ## Tecnologías utilizadas
 
 - **Python:** implementación y análisis numérico.
