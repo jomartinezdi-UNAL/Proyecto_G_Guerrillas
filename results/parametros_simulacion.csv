@@ -1,0 +1,9 @@
+parametro,descripcion,cpp,python,unidad
+N,Fuerza total,30000,30000,unidades
+nu,Probabilidad de fragmentación,0.01,0.01,adimensional
+pasos_eventos,Pasos/eventos de la simulación principal,900000000,9000000,eventos
+tiempo,Tiempo registrado,188.419,28406.1,s
+muestras_acumuladas,Muestras acumuladas durante la ejecución,120000,No aplica: análisis del estado final,muestras
+barridos,Barridos de N eventos,No reportado,300,barridos
+grupos_finales,Número de grupos al finalizar,No reportado,15729,grupos
+suma_tamanos_final,Suma de tamaños al finalizar,No reportado,30000,unidades
