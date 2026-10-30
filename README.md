@@ -39,6 +39,8 @@ Para las simulaciones finales se utilizó:
 
 ## Estructura del repositorio
 
+## Estructura del repositorio
+
 Proyecto_G_Guerrillas/
 │
 ├── figures/
