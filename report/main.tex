@@ -1,1 +1,705 @@
+\documentclass[
+a4paper,
+amsfonts,
+amssymb,
+amsmath,
+reprint,
+twoside
+]{revtex4-1}
 
+% =========================================================
+% CONFIGURACIÓN IDIOMA Y CODIFICACIÓN
+% =========================================================
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% =========================================================
+% PAQUETES MATEMÁTICOS
+% =========================================================
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+
+% =========================================================
+% FIGURAS Y TABLAS
+% =========================================================
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+% =========================================================
+% HIPERVÍNCULOS
+% =========================================================
+\usepackage[
+pdftex,
+pdftitle={Taller de reconocimiento de materiales},
+pdfauthor={Nombres de los integrantes}
+]{hyperref}
+% =========================================================
+% REDUCCIÓN ESPACIADO ECUACIONES
+% =========================================================
+
+\AtBeginDocument{
+
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+
+}
+
+% =========================================================
+% REDUCCIÓN ESPACIADO LISTAS
+% =========================================================
+
+\usepackage{enumitem}
+
+\setlist[itemize]{
+noitemsep,
+topsep=0pt,
+parsep=0pt,
+partopsep=0pt
+}
+
+% =========================================================
+% FECHA
+% =========================================================
+
+\makeatletter
+\def\Dated@name{}
+\makeatother
+
+% =========================================================
+% ESTILO BIBLIOGRÁFICO
+% =========================================================
+
+\bibliographystyle{apsrev4-1}
+
+% =========================================================
+% DOCUMENTO
+% =========================================================
+
+\begin{document}
+
+% =========================================================
+% TÍTULO
+% =========================================================
+
+\title{
+Simulación computacional de un proceso de guerra de guerrillas
+}
+
+% =========================================================
+% AUTORES
+% =========================================================
+
+\author{
+Juan Esteban Gómez Gómez, Jose Luis Martinez Diaz, William David Rincón Verano, Serena Triviño Sáenz
+}
+
+\affiliation{
+Universidad Nacional de Colombia
+}
+
+\date{30 de octubre de 2026}
+
+% =========================================================
+% RESUMEN
+% =========================================================
+
+%------------------------------------------------
+\begin{abstract}
+
+En este trabajo se estudia mediante simulación computacional un
+modelo estocástico de fragmentación y fusión aplicado a un proceso
+de guerra de guerrillas. El sistema se representa mediante unidades
+de ataque que interactúan de acuerdo con reglas probabilísticas,
+conservando una fuerza total de $N=30\,000$. Se desarrollaron dos
+implementaciones independientes, en C++ y Python, para obtener
+las distribuciones de tamaños y analizar su comportamiento frente
+a una ley de potencia de referencia, caracterizada por el exponente
+teórico $\alpha=2.5$. Asimismo, se examinó la influencia del
+parámetro de fragmentación $\nu$ para cuatro valores entre
+$0.005$ y $0.1$. Los resultados muestran distribuciones decrecientes
+compatibles con un comportamiento de ley de potencia y exponentes
+estimados entre $2.514$ y $2.634$ en Python, y entre $2.5686$
+y $2.5953$ en C++. La comparación entre ambas implementaciones
+presentó diferencias relativas inferiores al $2.2\%$. Finalmente,
+se verificó la conservación de la fuerza total en Python y se
+compararon los tiempos de ejecución, observándose un menor tiempo
+registrado para C++ bajo los procedimientos computacionales
+utilizados.\\
+
+Palabras clave: fragmentación, fusión,
+simulación estocástica, guerra de guerrillas, ley de potencia.
+\end{abstract}
+
+\maketitle
+
+%------------------------------------------------
+
+%------------------------------------------------
+\section{Introducción}
+
+Los sistemas constituidos por múltiples unidades que interactúan
+mediante procesos de fragmentación y fusión pueden presentar
+distribuciones estadísticas de tamaño que siguen leyes de potencia.
+El estudio de estos sistemas permite analizar cómo reglas locales
+y probabilísticas generan comportamientos colectivos a escala
+global. Johnson et al.~\cite{johnson2005} estudiaron regularidades
+estadísticas en conflictos armados y propusieron un marco para
+analizar la distribución de la intensidad de los eventos violentos.
+Posteriormente, Johnson et al.~\cite{johnson2006} examinaron patrones
+estadísticos comunes en guerras y terrorismo, proporcionando un
+contexto para el estudio de modelos de fragmentación y fusión.
+
+En este trabajo se estudia un modelo estocástico en el que la fuerza
+total del sistema se distribuye entre diferentes unidades de ataque.
+Estas unidades pueden fragmentarse en componentes de tamaño unitario
+o fusionarse con otras unidades, de acuerdo con reglas probabilísticas.
+La evolución del sistema se simula computacionalmente siguiendo el
+modelo descrito en los artículos de referencia.
+
+El objetivo es obtener y analizar la distribución de tamaños de las
+unidades, contrastarla con la ley de potencia teórica
+$n_s \propto s^{-\alpha}$, cuyo exponente de referencia es
+$\alpha=2.5$, y estudiar cómo varía la distribución al modificar
+el parámetro de fragmentación $\nu$. Para ello, se comparan dos
+implementaciones independientes, desarrolladas en C++ y Python,
+considerando tanto los resultados estadísticos como sus tiempos
+de ejecución.
+
+
+%------------------------------------------------
+
+%------------------------------------------------
+\section{Objetivos}
+
+\subsection{Objetivo general}
+
+Implementar y analizar computacionalmente un modelo estocástico
+de fragmentación y fusión aplicado a un proceso de guerra de
+guerrillas, con el propósito de estudiar la distribución de tamaños
+de las unidades, contrastarla con la ley de potencia teórica de
+exponente $\alpha=2.5$ y comparar los resultados y el desempeño
+computacional de dos implementaciones desarrolladas en C++ y Python.
+
+\subsection{Objetivos específicos}
+
+\begin{itemize}
+
+    \item Implementar las reglas probabilísticas de selección,
+    fragmentación y fusión mediante algoritmos desarrollados
+    en C++ y Python.
+
+    \item Verificar la conservación de la fuerza total del sistema
+    durante la evolución de la simulación.
+
+    \item Obtener y analizar la distribución estadística del número
+    de unidades en función de su tamaño, y contrastarla con el
+    comportamiento teórico esperado.
+
+    \item Estimar el exponente $\alpha$ mediante un ajuste lineal
+    en escala logarítmica y compararlo con el valor teórico
+    de referencia.
+
+    \item Examinar la variación de las distribuciones de tamaños
+    y del exponente estimado al modificar el parámetro de
+    fragmentación $\nu$.
+
+    \item Comparar los resultados estadísticos y los tiempos de
+    ejecución de las implementaciones en C++ y Python,
+    considerando las condiciones de simulación utilizadas.
+
+\end{itemize}
+
+%------------------------------------------------
+
+%------------------------------------------------
+\section{Modelo matemático}
+
+\subsection{Representación del sistema}
+
+El sistema está constituido por un conjunto de unidades, cada una
+caracterizada por un tamaño o fuerza de ataque $s_i$. La fuerza total
+del sistema se conserva durante la evolución y se expresa como
+
+\begin{equation}
+    \sum_{i=1}^{M}s_i=N,
+    \label{eq:conservacion}
+\end{equation}
+
+donde $N$ representa la fuerza total del sistema y $M$ es el número
+de unidades presentes en un instante determinado.
+
+Inicialmente, el sistema se compone de $N$ unidades de tamaño
+unitario, de modo que $s_i=1$ para todas ellas. Las interacciones
+modifican el número de unidades y sus tamaños, sin alterar la suma
+total de sus tamaños.
+
+\subsection{Selección de unidades}
+
+La selección de una unidad depende de su tamaño. La probabilidad
+de seleccionar la unidad $i$ se define como
+
+\begin{equation}
+    P_i=\frac{s_i}{N}.
+    \label{eq:seleccion}
+\end{equation}
+
+Por tanto, las unidades de mayor tamaño tienen una probabilidad
+proporcionalmente mayor de ser seleccionadas. Esta regla introduce
+una dependencia entre el tamaño de cada unidad y su participación
+en las interacciones del sistema.
+
+\subsection{Fragmentación}
+
+Con probabilidad $\nu$, la unidad seleccionada se fragmenta en
+$s_i$ unidades de tamaño unitario. Si la unidad original tiene
+tamaño $s_i$, la fragmentación conserva la fuerza total, puesto que
+
+\begin{equation}
+    s_i=\underbrace{1+1+\cdots+1}_{s_i\text{ unidades}}.
+\end{equation}
+
+Este proceso incrementa el número de unidades y distribuye la
+fuerza entre componentes de menor tamaño.
+
+\subsection{Fusión}
+
+Con probabilidad $1-\nu$, se selecciona otra unidad de tamaño $s_j$
+y ambas se fusionan en una unidad cuyo tamaño es
+
+\begin{equation}
+    s_{\mathrm{nueva}}=s_i+s_j.
+    \label{eq:fusion}
+\end{equation}
+
+La fusión reduce el número de unidades y concentra la fuerza en
+componentes de mayor tamaño. La selección de la segunda unidad
+se realiza de acuerdo con la regla probabilística implementada
+en el algoritmo.
+
+\subsection{Distribución de tamaños y exponente}
+
+Sea $n_s$ el número de unidades de tamaño $s$. La distribución de
+tamaños permite caracterizar el estado estadístico del sistema.
+Como referencia teórica, se considera una distribución de ley de
+potencia de la forma
+
+\begin{equation}
+    n_s\propto s^{-\alpha},
+    \label{eq:ley_potencia}
+\end{equation}
+
+donde $\alpha$ es el exponente que caracteriza el decrecimiento
+de la distribución.
+
+Al tomar logaritmos en ambos lados de la ecuación
+\eqref{eq:ley_potencia}, se obtiene una relación lineal:
+
+\begin{equation}
+    \log(n_s)=C-\alpha\log(s),
+    \label{eq:ajuste_lineal}
+\end{equation}
+
+donde $C$ es una constante. Por tanto, el exponente se estima
+como el negativo de la pendiente del ajuste lineal entre
+$\log(s)$ y $\log(n_s)$.
+
+Para el análisis se utiliza $\alpha=2.5$ como valor teórico de
+referencia. La comparación con este valor se realiza mediante
+las distribuciones obtenidas y los exponentes estimados
+numéricamente.
+
+
+%------------------------------------------------
+\section{Algoritmo e implementación computacional}
+
+\subsection{Procedimiento de simulación}
+
+El modelo se implementó de manera independiente en C++ y Python.
+Ambas implementaciones representan los procesos de selección,
+fragmentación y fusión de las unidades, con el propósito de
+estudiar la evolución del sistema y obtener la distribución de
+tamaños de las unidades de ataque.
+
+El procedimiento general consiste en inicializar el sistema con
+$N$ unidades de tamaño uno, seleccionar unidades de acuerdo con
+la regla probabilística del modelo y decidir si ocurre
+fragmentación o fusión mediante el parámetro $\nu$. Después de
+cada interacción se actualiza el estado del sistema y se repite
+el proceso durante el número de pasos establecido. Finalmente,
+se obtiene la distribución de tamaños y se estima el exponente
+de escala.
+
+Las implementaciones difieren en la forma de procesar los datos:
+Python analiza la distribución del estado final de la simulación,
+mientras que C++ acumula muestras durante la ejecución. Esta
+diferencia debe tenerse en cuenta al comparar las distribuciones
+y los exponentes estimados.
+
+\subsection{Organización y gestión del trabajo colaborativo}
+
+Para coordinar el desarrollo del proyecto se utilizó la plataforma
+\textit{Jira}, con el propósito de organizar las actividades,
+asignar responsabilidades y realizar seguimiento al avance
+del equipo de trabajo. Mediante un tablero colaborativo se
+distribuyeron las tareas relacionadas con la revisión del modelo
+matemático, la implementación computacional, el análisis de
+resultados y la elaboración del informe.
+
+Esta herramienta permitió visualizar las actividades pendientes,
+en ejecución y completadas, facilitando la coordinación entre
+los integrantes y el seguimiento de los compromisos establecidos.
+Como evidencia del proceso de organización se presenta el tablero
+utilizado durante el desarrollo del proyecto.
+
+El espacio de trabajo puede consultarse en el siguiente enlace:
+\url{https://unal-team-bomb75.atlassian.net/jira/software/projects/KAN/list?jql=project%20%3D%20KAN%20ORDER%20BY%20cf%5B10019%5D%20ASC}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\columnwidth]{Figuras/jira.png}
+    \caption{Tablero de Jira utilizado para la asignación,
+    organización y seguimiento de las actividades del proyecto.}
+    \label{fig:tablero_jira}
+\end{figure}
+
+\subsection{Parámetros de simulación}
+
+En las simulaciones finales se utilizó una fuerza total
+$N=30\,000$ y un parámetro de fragmentación $\nu=0.01$ para
+el análisis principal. También se estudiaron cuatro valores
+del parámetro de fragmentación:
+$\nu\in\{0.005,\,0.01,\,0.05,\,0.1\}$.
+
+La Tabla~\ref{tab:parametros} resume los parámetros principales
+de las dos implementaciones.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Parámetros de las simulaciones principales.}
+    \label{tab:parametros}
+    \begin{tabular}{lll}
+        \toprule
+        Parámetro & Símbolo & Valor \\
+        \midrule
+        Fuerza total & $N$ & $30\,000$ \\
+        Fragmentación & $\nu$ & $0.01$ \\
+        Pasos de Python & $T_{\mathrm{Py}}$ & $9\,000\,000$ \\
+        Pasos de C++ & $T_{\mathrm{C++}}$ & $900\,000\,000$ \\
+        Semilla inicial de C++ & -- & $6767$ \\
+        Valores de $\nu$ & -- &
+        $0.005,\,0.01,\,0.05,\,0.1$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+En Python, la simulación principal se ejecutó durante 300 barridos,
+equivalentes a $9\,000\,000$ eventos para $N=30\,000$. En C++,
+la ejecución principal utilizó $900\,000\,000$ pasos. Para el
+barrido de $\nu$, se consideraron los cuatro valores indicados.
+El número de pasos y el procedimiento de acumulación de muestras
+no son iguales en ambas implementaciones, por lo que estas
+diferencias se consideran al interpretar los resultados.
+
+\subsection{Estimación del exponente}
+
+El exponente $\alpha$ se estimó mediante un ajuste lineal de
+$\log_{10}(n_s)$ frente a $\log_{10}(s)$, considerando los valores
+positivos de $n_s$ en el intervalo
+
+\begin{equation}
+    2\leq s\leq 30.
+\end{equation}
+
+Si $m$ representa la pendiente obtenida mediante regresión lineal,
+el exponente estimado se calcula como
+
+\begin{equation}
+    \widehat{\alpha}=-m.
+    \label{eq:alpha_estimado}
+\end{equation}
+
+Este procedimiento proporciona una estimación exploratoria del
+exponente. Su valor depende de la distribución obtenida, del
+intervalo de ajuste y del procedimiento utilizado para acumular
+los datos. Por ello, los resultados se comparan con el valor
+teórico de referencia $\alpha=2.5$ sin asumir una coincidencia
+exacta.
+
+
+%------------------------------------------------
+\section{Resultados}
+
+\subsection{Distribución de tamaños}
+
+Las simulaciones permiten obtener la distribución del número de
+unidades $n_s$ en función de su tamaño $s$. Para el caso principal,
+se utilizó una fuerza total $N=30\,000$ y un parámetro de
+fragmentación $\nu=0.01$. Las distribuciones obtenidas mediante
+las implementaciones en C++ y Python se presentan en las
+Figuras~\ref{fig:distribucion_cpp} y~\ref{fig:distribucion_python},
+respectivamente.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\columnwidth]{Figuras/c_1.png}
+    \caption{Distribución del número de unidades en función de su
+    tamaño, obtenida mediante la implementación en C++ para
+    $N=30\,000$ y $\nu=0.01$.}
+    \label{fig:distribucion_cpp}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\columnwidth]{Figuras/p_1.png}
+    \caption{Distribución del número de unidades en función de su
+    tamaño, obtenida mediante la implementación en Python para
+    $N=30\,000$ y $\nu=0.01$.}
+    \label{fig:distribucion_python}
+\end{figure}
+
+En ambas implementaciones se observa que el número de unidades
+disminuye al aumentar su tamaño, comportamiento compatible con
+una distribución de tipo ley de potencia. Sin embargo, las
+distribuciones presentan diferencias, por lo que la comparación
+cuantitativa se realiza mediante los exponentes estimados.
+
+\subsection{Efecto del parámetro de fragmentación}
+
+Para examinar la influencia de la fragmentación sobre la
+distribución de tamaños, se consideraron cuatro valores del
+parámetro: $\nu=0.005$, $0.01$, $0.05$ y $0.1$. Los resultados
+obtenidos mediante las implementaciones en C++ y Python se
+presentan en las Figuras~\ref{fig:distribuciones_nu_cpp}
+y~\ref{fig:distribuciones_nu_python}, respectivamente.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\columnwidth]{Figuras/c_2.png}
+    \caption{Distribuciones del número de unidades en función de
+    su tamaño, obtenidas mediante C++ para los valores del
+    parámetro de fragmentación
+    $\nu\in\{0.005,\,0.01,\,0.05,\,0.1\}$.}
+    \label{fig:distribuciones_nu_cpp}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.0\columnwidth]{Figuras/p_2.png}
+    \caption{Distribuciones del número de unidades en función de
+    su tamaño, obtenidas mediante Python para los valores del
+    parámetro de fragmentación
+    $\nu\in\{0.005,\,0.01,\,0.05,\,0.1\}$.}
+    \label{fig:distribuciones_nu_python}
+\end{figure}
+
+Los resultados permiten comparar cómo cambia la distribución
+al modificar la probabilidad de fragmentación. La magnitud de
+estos cambios se evalúa también mediante el exponente
+$\alpha$ estimado para cada valor de $\nu$.
+
+\subsection{Estimación y comparación del exponente}
+
+El exponente se estimó mediante un ajuste lineal en escala
+logarítmica, utilizando los valores positivos de $n_s$ en el
+intervalo $2\leq s\leq 30$. La Tabla~\ref{tab:exponentes}
+presenta los resultados de ambas implementaciones y la diferencia
+relativa entre sus estimaciones.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Exponentes estimados mediante C++ y Python y
+    diferencia relativa entre los resultados.}
+    \label{tab:exponentes}
+    \begin{tabular}{cccc}
+        \toprule
+        $\nu$ & $\alpha_{\mathrm{C++}}$ &
+        $\alpha_{\mathrm{Python}}$ & Diferencia (\%) \\
+        \midrule
+        0.005 & 2.5953 & 2.605 & 0.37 \\
+        0.010 & 2.5762 & 2.586 & 0.38 \\
+        0.050 & 2.5686 & 2.514 & 2.17 \\
+        0.100 & 2.5895 & 2.634 & 1.69 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+La diferencia relativa se calculó respecto al resultado de
+Python mediante
+
+\begin{equation}
+    \Delta_{\alpha}=
+    \frac{\left|\alpha_{\mathrm{C++}}-
+    \alpha_{\mathrm{Python}}\right|}
+    {\alpha_{\mathrm{Python}}}\times 100\%.
+\end{equation}
+
+Las diferencias entre las estimaciones se encuentran entre
+aproximadamente $0.37\%$ y $2.17\%$. El menor desacuerdo se
+presenta para $\nu=0.005$ y $\nu=0.01$, mientras que el mayor
+corresponde a $\nu=0.05$. Como referencia, el exponente teórico
+considerado en este trabajo es $\alpha=2.5$. Los valores
+numéricos obtenidos se encuentran por encima de dicha referencia,
+aunque su cercanía varía según el parámetro y la implementación.
+
+\subsection{Desempeño computacional y conservación}
+
+La ejecución principal en Python utilizó $9\,000\,000$ eventos
+y registró un tiempo de $28\,406.1$ segundos. Al finalizar,
+el sistema contenía $15\,729$ unidades y la suma de sus tamaños
+era $30\,000$, verificando la conservación de la fuerza total:
+
+\begin{equation}
+    \sum_{i=1}^{M}s_i=N=30\,000.
+\end{equation}
+
+Por su parte, la implementación en C++ registró un tiempo de
+ejecución de $188.419$ segundos para $900\,000\,000$ pasos,
+con $120\,000$ muestras acumuladas. Estos tiempos corresponden
+a los procedimientos utilizados en cada implementación. Dado
+que Python analiza el estado final, mientras que C++ acumula
+muestras durante la ejecución, la comparación de rendimiento
+debe interpretarse teniendo en cuenta esta diferencia
+metodológica.
+
+%------------------------------------------------
+\section{Discusión}
+
+Los resultados obtenidos muestran que las distribuciones de
+tamaños presentan un comportamiento decreciente, en el que las
+unidades de mayor tamaño son menos numerosas que las de menor
+tamaño. Este comportamiento es compatible con una distribución
+de ley de potencia, como la propuesta en el modelo de referencia.
+Sin embargo, los exponentes estimados no coinciden exactamente
+con el valor teórico $\alpha=2.5$, lo que evidencia diferencias
+entre el comportamiento numérico y la predicción teórica.
+
+La comparación entre las implementaciones en C++ y Python muestra
+una concordancia general en las estimaciones del exponente.
+Las diferencias relativas calculadas se encuentran entre
+$0.37\%$ y $2.17\%$, lo que indica que ambos procedimientos
+producen resultados cuantitativamente cercanos. Las discrepancias
+pueden relacionarse con las diferencias metodológicas entre las
+implementaciones: Python obtiene la distribución a partir del
+estado final de la simulación, mientras que C++ acumula muestras
+durante su ejecución. Por tanto, los resultados no corresponden
+a procedimientos de muestreo idénticos.
+
+En cuanto al parámetro de fragmentación $\nu$, los exponentes
+estimados presentan variaciones moderadas para los cuatro valores
+estudiados. En Python, el exponente disminuye de $2.605$ a
+$2.514$ al pasar de $\nu=0.005$ a $\nu=0.05$, y posteriormente
+aumenta hasta $2.634$ para $\nu=0.1$. En C++, las estimaciones
+se mantienen en un intervalo más estrecho, entre $2.5686$ y
+$2.5953$. Estos resultados muestran que, dentro del conjunto
+de parámetros analizado, no se observa una variación estrictamente
+monótona del exponente con respecto a $\nu$.
+
+Por otra parte, la simulación en Python permitió verificar la
+conservación de la fuerza total del sistema, cuya suma permaneció
+en $N=30\,000$ al finalizar el procedimiento. Esta comprobación
+respalda la correcta implementación de las operaciones de
+fragmentación y fusión desde el punto de vista de la conservación.
+
+Finalmente, los tiempos de ejecución registrados muestran una
+diferencia importante entre las implementaciones. C++ completó
+su procedimiento en $188.419$ segundos, mientras que Python
+registró $28\,406.1$ segundos. Aunque estos resultados evidencian
+un menor tiempo de ejecución para C++, la comparación debe
+considerarse con cautela, debido a que ambas implementaciones
+utilizaron diferentes cantidades de pasos y distintos
+procedimientos de acumulación de muestras.
+
+
+%------------------------------------------------
+\section{Repositorio y disponibilidad del código fuente}
+
+Con el propósito de organizar y facilitar la consulta de los
+recursos computacionales desarrollados, se creó un repositorio
+público en GitHub para el proyecto. Este contiene las
+implementaciones del modelo en C++ y Python, los cuadernos
+Jupyter, las figuras generadas durante las simulaciones,
+los resultados numéricos y los archivos de configuración
+y documentación.
+
+El repositorio se encuentra disponible en el siguiente enlace:
+
+\begin{center}
+    \url{https://github.com/jomartinezdi-UNAL/Proyecto_G_Guerrillas}
+\end{center}
+
+La estructura del repositorio permite identificar por separado
+el código fuente, los notebooks de ejecución, las figuras,
+los resultados y los recursos necesarios para consultar
+y reproducir el procedimiento computacional.
+%------------------------------------------------
+
+
+%------------------------------------------------
+\section{Conclusiones}
+
+\begin{itemize}
+
+    \item Se implementó computacionalmente un modelo estocástico
+    de fragmentación y fusión en dos lenguajes de programación,
+    C++ y Python, permitiendo estudiar la evolución de las
+    unidades y sus distribuciones de tamaños.
+
+    \item Las distribuciones obtenidas presentan un comportamiento
+    decreciente compatible con una ley de potencia. Los exponentes
+    estimados se encuentran por encima del valor teórico de
+    referencia $\alpha=2.5$, con valores entre $2.514$ y $2.634$
+    para Python, y entre $2.5686$ y $2.5953$ para C++.
+
+    \item La comparación entre las implementaciones muestra una
+    concordancia cuantitativa en la estimación del exponente,
+    con diferencias relativas inferiores al $2.2\%$ para los
+    cuatro valores de $\nu$ estudiados. Las discrepancias
+    observadas deben interpretarse considerando que los
+    procedimientos de acumulación de datos son diferentes.
+
+    \item La variación del parámetro de fragmentación
+    $\nu\in\{0.005,\,0.01,\,0.05,\,0.1\}$ produjo cambios
+    moderados en los exponentes estimados. No se identificó
+    una relación monótona entre dicho parámetro y el exponente
+    $\alpha$ dentro del intervalo analizado.
+
+    \item La implementación en Python permitió verificar la
+    conservación de la fuerza total del sistema, manteniéndose
+    la suma de los tamaños igual a $N=30\,000$ al finalizar
+    la simulación.
+
+    \item Finalmente, C++ presentó un menor tiempo de ejecución
+    registrado que Python. No obstante, debido a las diferencias
+    en el número de pasos y en los procedimientos de muestreo,
+    esta comparación no constituye una evaluación controlada
+    del rendimiento de ambos lenguajes.
+
+\end{itemize}
+
+%------------------------------------------------
+\begin{thebibliography}{9}
+
+\bibitem{johnson2005}
+N. Johnson et al.,
+\textit{From old wars to new wars and global terrorism},
+arXiv:physics/0506213, 2005.
+
+\bibitem{johnson2006}
+N. Johnson et al.,
+\textit{Universal patterns underlying ongoing wars and terrorism},
+arXiv:physics/0605035, 2006.
+
+\end{thebibliography}
+
+\end{document}
