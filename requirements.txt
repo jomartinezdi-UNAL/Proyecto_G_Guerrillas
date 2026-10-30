@@ -1,3 +1,9 @@
+# Bibliotecas para cálculo numérico y análisis de datos
 numpy
+pandas
+
+# Bibliotecas para visualización
 matplotlib
-scipy
+
+# Entorno para ejecutar los notebooks
+jupyter
